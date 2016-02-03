@@ -17,6 +17,7 @@ public:
 	bool IsFinished();
 	void End();
 	void Interrupted();
+	PIDController* GetPIDController();	// temp
 };
 
 class SetDistancePIDSource: public PIDSource {

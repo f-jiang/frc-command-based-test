@@ -32,6 +32,11 @@ void SetHeading::Interrupted()
 	End();
 }
 
+// temp
+PIDController* SetHeading::GetPIDController() {
+	return pid;
+}
+
 SetHeadingPIDSource::~SetHeadingPIDSource() { }
 
 double SetHeadingPIDSource::PIDGet() {
@@ -43,4 +48,3 @@ SetHeadingPIDOutput::~SetHeadingPIDOutput() { }
 void SetHeadingPIDOutput::PIDWrite(float r) {
 	CommandBase::drivetrain->Drive(0, r);
 }
-

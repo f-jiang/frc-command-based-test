@@ -16,6 +16,7 @@ public:
 	bool IsFinished();
 	void End();
 	void Interrupted();
+	PIDController* GetPIDController();	// temp
 };
 
 class SetHeadingPIDSource: public PIDSource {

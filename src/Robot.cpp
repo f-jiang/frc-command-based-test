@@ -10,27 +10,24 @@ class Robot: public IterativeRobot
 {
 private:
 	std::unique_ptr<Command> autonomousCommand;
-	std::string autoSelected[3] = { "Move Around", "Rotate 360 degrees", "Move 3ft from wall" };
 	SendableChooser *chooser;
 
-	std::unique_ptr<Command> move;
-	std::unique_ptr<Command> changeHeading;
-	std::unique_ptr<Command> setDistance;
+	std::unique_ptr<MoveAround> moveAround{new MoveAround()};
+	std::unique_ptr<ChangeHeading> changeHeading{new ChangeHeading(360)};
+	std::unique_ptr<SetDistance> setDistance{new SetDistance(36)};
+
+	float kP = 0, kI = 0, kD = 0;
 
 	void RobotInit()
 	{
 		CommandBase::init();
 
-		move.reset(new MoveAround());
-		changeHeading.reset(new ChangeHeading(360));
-		setDistance.reset(new SetDistance(36));
-
 		chooser = new SendableChooser();
-
-		chooser->AddDefault(autoSelected[0], move.get());
-		chooser->AddObject(autoSelected[1], changeHeading.get());
-		chooser->AddObject(autoSelected[2], setDistance.get());
 		SmartDashboard::PutData("Auto Modes", chooser);
+
+		SmartDashboard::PutData("Move Around", moveAround.get());
+		SmartDashboard::PutData("Rotate 360 degrees", changeHeading.get());
+		SmartDashboard::PutData("Set dist to 3ft", setDistance.get());
 	}
 
 	/**
@@ -45,6 +42,13 @@ private:
 	void DisabledPeriodic()
 	{
 		Scheduler::GetInstance()->Run();
+
+		// temp util for tuning PID
+		kP = (float) SmartDashboard::GetNumber("DB/Slider 0", 0.0);
+		kI = (float) SmartDashboard::GetNumber("DB/Slider 1", 0.0);
+		kD = (float) SmartDashboard::GetNumber("DB/Slider 2", 0.0);
+		changeHeading->GetPIDController()->SetPID(kP, kI, kD);
+		setDistance->GetPIDController()->SetPID(kP, kI, kD);
 	}
 
 	/**

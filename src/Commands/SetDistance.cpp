@@ -31,6 +31,11 @@ void SetDistance::Interrupted()
 	End();
 }
 
+// temp
+PIDController* SetDistance::GetPIDController() {
+	return pid;
+}
+
 SetDistancePIDSource::~SetDistancePIDSource() { }
 
 double SetDistancePIDSource::PIDGet() {
@@ -42,4 +47,3 @@ SetDistancePIDOutput::~SetDistancePIDOutput() { }
 void SetDistancePIDOutput::PIDWrite(float d) {
 	CommandBase::drivetrain->Drive(d, 0);
 }
-

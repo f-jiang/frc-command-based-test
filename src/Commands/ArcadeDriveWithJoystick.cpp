@@ -10,9 +10,10 @@ void ArcadeDriveWithJoystick::Initialize() { }
 void ArcadeDriveWithJoystick::Execute() {
 	Joystick* stick = CommandBase::oi->GetJoystick();
 	float moveValue = stick->GetRawAxis(1);
-	float rotateValue = stick->GetRawAxis(2);
+	float rotateValue = stick->GetRawAxis(4);
 
 	CommandBase::drivetrain->Drive(moveValue, rotateValue);
+	CommandBase::drivetrain->Log();
 }
 
 bool ArcadeDriveWithJoystick::IsFinished() {

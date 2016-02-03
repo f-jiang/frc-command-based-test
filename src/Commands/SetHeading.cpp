@@ -1,10 +1,11 @@
 #include <Commands/SetHeading.h>
 
 SetHeading::SetHeading(float heading):	// heading in degrees
-	pid(new PIDController(-0.1, 0, 0, new SetHeadingPIDSource(), new SetHeadingPIDOutput()))
+	pid(new PIDController(-0.01, -0.01, -0.15, new SetHeadingPIDSource(), new SetHeadingPIDOutput()))
 {
 	Requires(CommandBase::drivetrain.get());
 
+	pid->SetOutputRange(-0.8, 0.8);
 	pid->SetAbsoluteTolerance(0.01);
 	pid->SetSetpoint(heading);
 }

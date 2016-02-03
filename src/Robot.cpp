@@ -1,4 +1,7 @@
 #include <Commands/ArcadeDriveWithJoystick.h>
+#include <Commands/MoveAround.h>
+#include <Commands/ChangeHeading.h>
+#include <Commands/SetDistance.h>
 #include "WPILib.h"
 #include "Commands/Command.h"
 #include "CommandBase.h"
@@ -7,15 +10,26 @@ class Robot: public IterativeRobot
 {
 private:
 	std::unique_ptr<Command> autonomousCommand;
+	std::string autoSelected[3] = { "Move Around", "Rotate 360 degrees", "Move 3ft from wall" };
 	SendableChooser *chooser;
+
+	std::unique_ptr<Command> move;
+	std::unique_ptr<Command> changeHeading;
+	std::unique_ptr<Command> setDistance;
 
 	void RobotInit()
 	{
 		CommandBase::init();
 
+		move.reset(new MoveAround());
+		changeHeading.reset(new ChangeHeading(360));
+		setDistance.reset(new SetDistance(36));
+
 		chooser = new SendableChooser();
-		chooser->AddDefault("Move Around", new MoveAround());
-		//chooser->AddObject("My Auto", new MyAutoCommand());
+
+		chooser->AddDefault(autoSelected[0], move.get());
+		chooser->AddObject(autoSelected[1], changeHeading.get());
+		chooser->AddObject(autoSelected[2], setDistance.get());
 		SmartDashboard::PutData("Auto Modes", chooser);
 	}
 
@@ -44,13 +58,6 @@ private:
 	 */
 	void AutonomousInit()
 	{
-		/* std::string autoSelected = SmartDashboard::GetString("Auto Selector", "Default");
-		if(autoSelected == "My Auto") {
-			autonomousCommand.reset(new MyAutoCommand());
-		} else {
-			autonomousCommand.reset(new ExampleCommand());
-		} */
-
 		autonomousCommand.reset((Command *)chooser->GetSelected());
 		CommandBase::drivetrain->Reset();
 		autonomousCommand->Start();
